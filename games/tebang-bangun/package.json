@@ -1,0 +1,30 @@
+{
+  "name": "loop-builders",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Loop Builders — game idle/clicker 3D satu tangan: kendaraan berputar di loop, mengangkut material dari mesin ke bangunan yang tumbuh.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "check": "tsc --noEmit && vitest run",
+    "balance": "vitest run tests/balance.test.ts --reporter=verbose",
+    "deploy": "bash scripts/deploy-pages.sh"
+  },
+  "dependencies": {
+    "three": "^0.186.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.186.0",
+    "typescript": "~5.9.3",
+    "vite": "^8.0.0",
+    "vitest": "^5.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IrvanFaturohman/loop-builders.git"
+  },
+  "homepage": "https://irvanfaturohman.github.io/loop-builders/"
+}

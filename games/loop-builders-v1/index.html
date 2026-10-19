@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#8fd16a" />
+    <meta name="description" content="Loop Builders — game idle/clicker 3D: kendaraan berputar mengangkut material untuk membangun rumah." />
+    <title>Loop Builders</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='26' width='52' height='32' rx='6' fill='%23c98b4f'/%3E%3Cpath d='M2 30 32 6l30 24z' fill='%23e05a42'/%3E%3Crect x='26' y='38' width='12' height='20' rx='2' fill='%233e8f7c'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <div id="stage">
+      <div id="app">
+        <canvas id="scene" aria-label="Dunia permainan 3D"></canvas>
+        <div id="labels"></div>
+        <div id="hud">
+          <header class="top" id="top">
+            <div class="top-row">
+              <div class="money" id="money" aria-live="polite">
+                <span class="coin" aria-hidden="true"></span>
+                <b id="money-val">0</b>
+                <span class="gain" id="money-gain"></span>
+              </div>
+              <div class="top-actions">
+                <button class="icon-btn" id="btn-sound" type="button" aria-label="Suara">
+                  <svg viewBox="0 0 24 24" class="ico-on"><path d="M4 9v6h4l5 4V5L8 9H4z" /><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke-width="2" stroke-linecap="round" /></svg>
+                  <svg viewBox="0 0 24 24" class="ico-off"><path d="M4 9v6h4l5 4V5L8 9H4z" /><path d="M16.5 9.5l5 5M21.5 9.5l-5 5" fill="none" stroke-width="2" stroke-linecap="round" /></svg>
+                </button>
+                <button class="icon-btn" id="btn-settings" type="button" aria-label="Pengaturan">
+                  <svg viewBox="0 0 24 24"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm8.4 5.1-1.9-.4a6.9 6.9 0 0 1-.7 1.6l1.1 1.6-1.9 1.9-1.6-1.1c-.5.3-1 .5-1.6.7l-.4 1.9h-2.8l-.4-1.9a6.9 6.9 0 0 1-1.6-.7l-1.6 1.1-1.9-1.9 1.1-1.6a6.9 6.9 0 0 1-.7-1.6l-1.9-.4v-2.8l1.9-.4c.2-.6.4-1.1.7-1.6L4.6 6.4l1.9-1.9 1.6 1.1c.5-.3 1-.5 1.6-.7l.4-1.9h2.8l.4 1.9c.6.2 1.1.4 1.6.7l1.6-1.1 1.9 1.9-1.1 1.6c.3.5.5 1 .7 1.6l1.9.4z" /></svg>
+                </button>
+              </div>
+            </div>
+            <div class="project" id="project">
+              <div class="p-row">
+                <span class="p-name" id="p-name">Proyek</span>
+                <span class="p-count" id="p-count">0/0</span>
+              </div>
+              <div class="p-bar"><div class="p-fill" id="p-fill"></div><div class="p-ticks" id="p-ticks"></div></div>
+              <div class="p-stage" id="p-stage"></div>
+            </div>
+            <div class="hint" id="hint" hidden></div>
+          </header>
+
+          <div class="boost" id="boost">
+            <div class="boost-bar"><div class="boost-fill" id="boost-fill"></div></div>
+          </div>
+
+          <footer class="bottom" id="bottom">
+            <div class="station-bar" id="station-bar">
+              <div class="st-tabs" id="st-tabs"></div>
+              <div class="st-info" id="st-info"></div>
+              <button class="st-action" id="st-action" type="button"></button>
+            </div>
+            <div class="main-buttons">
+              <button class="big-btn add" id="btn-add" type="button">
+                <span class="bb-icon"><svg viewBox="0 0 32 24"><rect x="1" y="7" width="18" height="10" rx="2" /><path d="M19 10h6l4 4v3H19z" /><circle cx="7" cy="19" r="3" /><circle cx="24" cy="19" r="3" /></svg></span>
+                <span class="bb-label">Tambah Kendaraan</span>
+                <span class="bb-cost" id="add-cost"></span>
+              </button>
+              <button class="big-btn merge" id="btn-merge" type="button">
+                <span class="bb-icon"><svg viewBox="0 0 24 24"><path d="M5 4v5a7 7 0 0 0 7 7 7 7 0 0 0 7-7V4" fill="none" stroke-width="3" stroke-linecap="round" /><path d="M12 16v5" fill="none" stroke-width="3" stroke-linecap="round" /><path d="M2 7l3-4 3 4M16 7l3-4 3 4" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+                <span class="bb-label">Gabung</span>
+                <span class="bb-cost" id="merge-sub"></span>
+              </button>
+              <button class="big-btn expand" id="btn-expand" type="button">
+                <span class="bb-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="6" fill="none" stroke-width="3" /><path d="M12 1v6M12 17v6M1 12h6M17 12h6" fill="none" stroke-width="2.4" stroke-linecap="round" /></svg></span>
+                <span class="bb-label">Perluas Jalur</span>
+                <span class="bb-cost" id="expand-cost"></span>
+              </button>
+            </div>
+          </footer>
+
+          <div class="tutorial" id="tutorial" hidden><span id="tutorial-text"></span></div>
+          <div class="toast" id="toast"></div>
+
+          <section class="complete" id="complete" hidden>
+            <div class="c-card">
+              <div class="c-badge">Selesai!</div>
+              <h2 id="c-title">Proyek selesai</h2>
+              <ul class="c-stats" id="c-stats"></ul>
+              <button class="next-btn" id="btn-next" type="button">Proyek Berikutnya</button>
+            </div>
+          </section>
+
+          <section class="modal" id="settings" hidden>
+            <div class="m-card" role="dialog" aria-modal="true" aria-labelledby="m-title">
+              <h2 id="m-title">Pengaturan</h2>
+              <label class="m-row">
+                <span>Suara</span>
+                <button class="switch" id="set-sound" type="button" role="switch" aria-checked="true"><i></i></button>
+              </label>
+              <div class="m-row m-reset">
+                <span>Reset progres</span>
+                <button class="danger" id="set-reset" type="button">Reset</button>
+              </div>
+              <div class="m-confirm" id="reset-confirm" hidden>
+                <p>Yakin? Semua progres, uang, dan bangunan akan dihapus.</p>
+                <div class="m-actions">
+                  <button id="reset-cancel" type="button">Batal</button>
+                  <button class="danger" id="reset-yes" type="button">Ya, hapus</button>
+                </div>
+              </div>
+              <p class="m-help">Ketuk/tahan area dunia untuk ngebut. Ketuk kendaraan lalu kendaraan setingkat lain untuk menggabung. Ketuk mesin untuk upgrade.</p>
+              <button class="m-close" id="set-close" type="button">Tutup</button>
+            </div>
+          </section>
+
+          <div class="title-card" id="title-card" hidden>
+            <small id="tc-area"></small>
+            <b id="tc-name"></b>
+          </div>
+          <div class="fade" id="fade"></div>
+        </div>
+      </div>
+    </div>
+    <noscript>Loop Builders membutuhkan JavaScript dan WebGL.</noscript>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
