@@ -19,4 +19,10 @@ for dir in games/*/; do
   cp -R "$dir/dist" "site/$slug"
 done
 
-echo "site/ ready: $(ls site | tr '\n' ' ')"
+# Single-file prototypes (original Claude artifacts) are copied as-is.
+for dir in artifacts/*/; do
+  slug="$(basename "$dir")"
+  cp -R "$dir" "site/$slug"
+done
+
+echo "site/ ready: $(ls site | wc -l | tr -d ' ') entries"

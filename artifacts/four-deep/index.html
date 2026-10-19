@@ -1,0 +1,638 @@
+<!doctype html><html><head>
+<meta name="viewport" content="width=device-width, initial-scale=1"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
+<title>Four Deep</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  :root{
+    color-scheme: dark;
+    --bg:#0F1213; --panel:#171B1D; --panel-2:#1E2325; --line:#2B3235; --line-2:#3A4347;
+    --ink:#E9EDED; --ink-2:#9AA4A6; --ink-3:#6B7679;
+    --sig:#FF6A38; --bad:#E66767; --good:#7FD1A8;
+    --c-b:#3987e5; --c-o:#d95926; --c-a:#199e70;
+    --fd:'IBM Plex Sans Condensed',system-ui,sans-serif;
+    --fb:'IBM Plex Sans',system-ui,sans-serif;
+    --fm:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--fb);margin:0;
+       -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:26px 18px 70px}
+
+  .mast{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;justify-content:space-between;
+        border-bottom:1px solid var(--line);padding-bottom:16px}
+  .kicker{font-family:var(--fm);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+          color:var(--sig);margin:0 0 8px}
+  h1{font-family:var(--fd);font-weight:700;font-size:clamp(30px,5.5vw,46px);line-height:.96;
+     letter-spacing:-.022em;margin:0}
+  .sub{color:var(--ink-2);font-size:14px;line-height:1.55;max-width:50ch;margin:10px 0 0}
+  .sub b{color:var(--ink)}
+  .mast-r{font-family:var(--fm);font-size:11px;color:var(--ink-3);line-height:1.75;text-align:right}
+  .mast-r b{color:var(--ink-2);font-weight:500}
+
+  .rule{margin-top:20px;border:1px solid var(--line);background:var(--panel);
+        display:grid;grid-template-columns:auto 1fr}
+  .rule-tag{font-family:var(--fm);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+            color:var(--bg);background:var(--sig);padding:12px 13px;writing-mode:vertical-rl;
+            display:grid;place-items:center;font-weight:600}
+  .rule-b{padding:13px 16px;font-size:13px;color:var(--ink-2);line-height:1.65}
+  .rule-b b{color:var(--ink)}
+
+  .stage{margin-top:20px;border:1px solid var(--line);background:var(--panel);position:relative}
+  .hud{display:flex;border-bottom:1px solid var(--line);font-family:var(--fm);font-size:11px;flex-wrap:wrap}
+  .hud > div{padding:9px 14px;border-right:1px solid var(--line);display:flex;gap:8px;align-items:center}
+  .hud .lbl{color:var(--ink-3);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase}
+  .hud .val{color:var(--ink);font-variant-numeric:tabular-nums;font-weight:500}
+  .hud .val.warn{color:var(--sig)} .hud .val.bad{color:var(--bad)}
+  .hud .grow{flex:1;border-right:0;justify-content:flex-end}
+
+  #view{width:100%;aspect-ratio:16/10;max-height:530px;display:block;background:#0F1213;
+        touch-action:manipulation}
+  .loading{position:absolute;inset:44px 0 auto;display:grid;place-items:center;height:200px;
+           font-family:var(--fm);font-size:12px;color:var(--ink-3)}
+
+  .trays{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 14px;
+         border-top:1px solid var(--line);background:var(--panel-2)}
+  .tbtn{border:1px solid var(--line-2);background:var(--panel);color:var(--ink-2);cursor:pointer;
+        padding:10px 8px;font-family:var(--fm);font-size:10.5px;letter-spacing:.07em;
+        display:flex;flex-direction:column;align-items:center;gap:6px;transition:border-color .12s}
+  .tbtn:hover:not(:disabled){border-color:var(--ink-3);color:var(--ink)}
+  .tbtn:disabled{opacity:.4;cursor:not-allowed}
+  .tbtn:focus-visible{outline:2px solid var(--sig);outline-offset:2px}
+  .tbtn .pips{display:flex;gap:3px}
+  .tbtn .pip{width:12px;height:12px;border:1px solid var(--line-2);background:transparent}
+  .tbtn .k{font-size:9px;color:var(--ink-3)}
+  .tbtn.jam{border-color:var(--bad);color:var(--bad)}
+
+  .money{border-top:1px solid var(--line);padding:11px 14px;display:flex;gap:9px;
+         align-items:center;flex-wrap:wrap}
+  .money-lbl{font-family:var(--fm);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;
+             color:var(--ink-3)}
+  .btn{font-family:var(--fm);font-size:11px;letter-spacing:.05em;padding:8px 12px;cursor:pointer;
+       background:var(--panel-2);color:var(--ink-2);border:1px solid var(--line-2);
+       display:flex;align-items:center;gap:7px}
+  .btn:hover:not(:disabled){border-color:var(--ink-3);color:var(--ink)}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+  .btn:focus-visible{outline:2px solid var(--sig);outline-offset:2px}
+  .btn .tag{font-size:8.5px;letter-spacing:.09em;padding:2px 5px;font-weight:600}
+  .tag.iap{background:var(--sig);color:#141414}
+  .tag.iaa{background:#2E3A3E;color:var(--ink-2);border:1px solid var(--line-2)}
+  .btn.primary{background:var(--sig);color:#141414;border-color:var(--sig);font-weight:600}
+
+  .veil{position:absolute;inset:0;background:rgba(10,13,14,.94);display:grid;place-items:center;
+        text-align:center;padding:24px;z-index:6}
+  .veil[hidden]{display:none}
+  .veil h3{font-family:var(--fd);font-size:28px;margin:0 0 6px;font-weight:700}
+  .veil h3.lose{color:var(--bad)} .veil h3.win{color:var(--good)}
+  .veil p{color:var(--ink-2);font-size:13px;margin:0 0 16px;max-width:42ch;line-height:1.55}
+  .veil .row{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}
+
+  .notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+         margin-top:18px;border:1px solid var(--line)}
+  .note{padding:15px 16px;border-right:1px solid var(--line)}
+  .note:last-child{border-right:0}
+  .note h4{font-family:var(--fm);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;
+           color:var(--sig);margin:0 0 8px;font-weight:500}
+  .note p{margin:0;font-size:12.5px;line-height:1.6;color:var(--ink-2)}
+  .note p+p{margin-top:7px}
+  .note b{color:var(--ink)}
+
+  .foot{margin-top:30px;padding-top:15px;border-top:1px solid var(--line);
+        font-family:var(--fm);font-size:10.5px;color:var(--ink-3);line-height:1.8}
+  .foot b{color:var(--ink-2)}
+
+  @media (max-width:640px){
+    .mast-r{text-align:left}
+    .note{border-right:0;border-bottom:1px solid var(--line)}
+    .note:last-child{border-bottom:0}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
+</style>
+
+<div class="wrap">
+  <div class="mast">
+    <div>
+      <p class="kicker">Prototype 02 · 3D · fixed core loop</p>
+      <h1>Four Deep</h1>
+      <p class="sub">Conveyor feeds, three trays hold four each. Four of a kind flushes.
+        A mixed full tray is <b>dead weight for the rest of the level</b>.</p>
+    </div>
+    <div class="mast-r">
+      Renderer <b>three.js r128</b><br>
+      Pieces <b>colour + silhouette</b><br>
+      Fail vector <b>overflow, not timer</b>
+    </div>
+  </div>
+
+  <div class="rule">
+    <div class="rule-tag">Fix</div>
+    <div class="rule-b">
+      Belt Lab v1 had <b>no decision</b> — the front item had exactly one correct bin and its colour
+      was visible, so play was reflex, not choice. That is the same failure as
+      <b>loop-sort</b>. Here every tray accepts every colour, so <b>you</b> decide where a piece
+      goes, and a bad placement poisons a tray you still need. Placement can be wrong for a
+      <i>reason</i>.
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="hud">
+      <div><span class="lbl">Level</span><span class="val" id="h-lvl">1</span></div>
+      <div><span class="lbl">Flushed</span><span class="val" id="h-flush">0/6</span></div>
+      <div><span class="lbl">Hammers</span><span class="val" id="h-ham">1</span></div>
+      <div class="grow"><span class="lbl">Belt</span><span class="val" id="h-belt">0/7</span></div>
+    </div>
+
+    <canvas id="view"></canvas>
+    <div class="loading" id="loading">initialising renderer…</div>
+
+    <div class="trays" id="trays"></div>
+
+    <div class="money">
+      <span class="money-lbl">Monetisation hooks</span>
+      <button class="btn" id="buy-ham"><span class="tag iap">IAP</span> Hammer pack ×3</button>
+      <button class="btn" id="ad-ham"><span class="tag iaa">REWARDED</span> Free hammer</button>
+      <button class="btn" id="restart">Restart level</button>
+    </div>
+
+    <div class="veil" id="veil" hidden>
+      <div>
+        <h3 id="veil-t"></h3>
+        <p id="veil-p"></p>
+        <div class="row" id="veil-row"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note">
+      <h4>Where the decision lives</h4>
+      <p>The belt <b>is the preview</b> — you can see what is coming. The dilemma is committing a
+        tray early versus keeping one open for a colour you can see arriving in four slots.</p>
+      <p>With three colours and twelve tray slots, “no clean placement” happens often. That is the
+        point: you choose which tray to sacrifice.</p>
+    </div>
+    <div class="note">
+      <h4>Where the money sits</h4>
+      <p>A jammed tray is a <b>self-inflicted, visible, recoverable</b> loss — the strongest possible
+        setup for a booster sale. The hammer clears one.</p>
+      <p>Pixel Flow ships exactly this at L230: <b>Wooden Blocks and Hammers</b>, which the
+        deconstruction describes as forcing tool prioritisation.</p>
+    </div>
+    <div class="note">
+      <h4>Why 3D, specifically</h4>
+      <p>This is Section 5 rule 1 — the <b>Voodoo-Grand hybridisation</b>: an old hyper-casual verb
+        rebuilt with 3D models, weighted motion and satisfying settle.</p>
+      <p>Pieces carry <b>shape and colour</b>: cube, cylinder, octahedron. Three hues is the most
+        that clears colour-blind separation, so silhouette does the rest.</p>
+    </div>
+  </div>
+
+  <p class="foot">Mechanic test only.</p>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  if(!window.THREE){
+    document.getElementById('loading').textContent = 'three.js failed to load — check connection.';
+    return;
+  }
+
+  /* ---------------- config ---------------- */
+  var COLORS = {
+    b:{hex:0x3987e5, css:'#3987e5', name:'CUBE'},
+    o:{hex:0xd95926, css:'#d95926', name:'DISC'},
+    a:{hex:0x199e70, css:'#199e70', name:'GEM'}
+  };
+  var KEYS = ['b','o','a'];
+  var TRAYS = 3, DEPTH = 4, BELT_CAP = 7, TARGET = 6;
+
+  var BELT_Y = 0.46, BELT_Z = -2.9, SLOT = 1.05, FRONT_X = 3.15;
+  var TRAY_X = [-3.0, 0, 3.0], TRAY_Z = 1.9, TRAY_Y = 0.48;
+  var CELL = [[-0.4,-0.4],[0.4,-0.4],[-0.4,0.4],[0.4,0.4]];
+
+  /* ---------------- state ---------------- */
+  var S = {
+    belt:[], trays:[[],[],[]], jam:[false,false,false],
+    lvl:1, flushed:0, hammers:1, over:false, won:false,
+    adUsed:false, feedMs:2600, acc:0, running:false
+  };
+
+  var orphans = [];   // pieces detached from the trays but still animating out
+  var $ = function(id){ return document.getElementById(id); };
+  var canvas = $('view'), veil = $('veil');
+
+  /* ---------------- three.js ---------------- */
+  var renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  if(THREE.sRGBEncoding) renderer.outputEncoding = THREE.sRGBEncoding;
+
+  var scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0F1213);
+  scene.fog = new THREE.Fog(0x0F1213, 21, 36);
+
+  var camera = new THREE.PerspectiveCamera(42, 16/10, 0.1, 80);
+  camera.position.set(0, 10.6, 8.0);
+  camera.lookAt(0, 0.2, -0.4);
+
+  scene.add(new THREE.AmbientLight(0xdfe8ea, 0.62));
+  var key = new THREE.DirectionalLight(0xffffff, 1.0);
+  key.position.set(5.5, 11, 6.5);
+  key.castShadow = true;
+  key.shadow.mapSize.set(1024,1024);
+  key.shadow.camera.left = -11; key.shadow.camera.right = 11;
+  key.shadow.camera.top = 11;  key.shadow.camera.bottom = -11;
+  key.shadow.camera.far = 30; key.shadow.bias = -0.0012;
+  scene.add(key);
+  var rim = new THREE.DirectionalLight(0xffcbaa, 0.42);
+  rim.position.set(-7, 3.5, -6);
+  scene.add(rim);
+
+  // floor
+  var floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(40, 30),
+    new THREE.MeshStandardMaterial({color:0x161B1D, roughness:0.95, metalness:0.0})
+  );
+  floor.rotation.x = -Math.PI/2;
+  floor.position.y = -0.02;
+  floor.receiveShadow = true;
+  scene.add(floor);
+
+  // conveyor deck
+  var deck = new THREE.Mesh(
+    new THREE.BoxGeometry(9.9, 0.34, 1.5),
+    new THREE.MeshStandardMaterial({color:0x22292B, roughness:0.75, metalness:0.15})
+  );
+  deck.position.set(-0.6, 0.05, BELT_Z);
+  deck.receiveShadow = true; deck.castShadow = true;
+  scene.add(deck);
+
+  // rollers (motion cue)
+  var rollers = [];
+  var rollGeo = new THREE.CylinderGeometry(0.11, 0.11, 1.44, 10);
+  var rollMat = new THREE.MeshStandardMaterial({color:0x394447, roughness:0.5, metalness:0.5});
+  for(var rx=-5.3; rx<=4.1; rx+=0.62){
+    var rl = new THREE.Mesh(rollGeo, rollMat);
+    rl.rotation.x = Math.PI/2;
+    rl.position.set(rx, 0.25, BELT_Z);
+    scene.add(rl); rollers.push(rl);
+  }
+
+  // end stop
+  var stop = new THREE.Mesh(
+    new THREE.BoxGeometry(0.24, 0.85, 1.5),
+    new THREE.MeshStandardMaterial({color:0xFF6A38, roughness:0.5, emissive:0x421400})
+  );
+  stop.position.set(FRONT_X + 0.72, 0.42, BELT_Z);
+  stop.castShadow = true;
+  scene.add(stop);
+
+  // trays
+  var TRAY_BASE = new THREE.Color(0x2A3235), TRAY_JAM = new THREE.Color(0x6E2C2C);
+  var trayGroups = [], trayMats = [];
+  for(var ti=0; ti<TRAYS; ti++){
+    var mat = new THREE.MeshStandardMaterial({color:0x2A3235, roughness:0.7, metalness:0.2});
+    trayMats.push(mat);
+    var g = new THREE.Group();
+    g.position.set(TRAY_X[ti], 0, TRAY_Z);
+    var base = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.14, 2.0), mat);
+    base.position.y = 0.07; base.receiveShadow = true; base.castShadow = true;
+    base.userData.tray = ti; g.add(base);
+    var sideGeo = new THREE.BoxGeometry(0.1, 0.6, 2.0);
+    var endGeo  = new THREE.BoxGeometry(2.0, 0.6, 0.1);
+    [[sideGeo,-0.95,0.44,0],[sideGeo,0.95,0.44,0],
+     [endGeo,0,0.44,-0.95],[endGeo,0,0.44,0.95]].forEach(function(w){
+      var m = new THREE.Mesh(w[0], mat);
+      m.position.set(w[1], w[2], w[3]);
+      m.castShadow = true; m.receiveShadow = true;
+      m.userData.tray = ti; g.add(m);
+    });
+    g.userData.tray = ti;
+    scene.add(g);
+    trayGroups.push(g);
+  }
+
+  /* ---------------- pieces ---------------- */
+  var GEOS = {
+    b: new THREE.BoxGeometry(0.68, 0.68, 0.68),
+    o: new THREE.CylinderGeometry(0.37, 0.37, 0.68, 20),
+    a: new THREE.OctahedronGeometry(0.5)
+  };
+  function makePiece(k){
+    var m = new THREE.Mesh(GEOS[k], new THREE.MeshStandardMaterial({
+      color: COLORS[k].hex, roughness:0.34, metalness:0.12
+    }));
+    m.castShadow = true; m.receiveShadow = true;
+    m.userData.k = k;
+    m.userData.target = new THREE.Vector3();
+    m.userData.fly = null;
+    if(k === 'a') m.rotation.y = Math.PI/4;
+    scene.add(m);
+    return m;
+  }
+  function dropPiece(m){
+    scene.remove(m);
+    if(m.material) m.material.dispose();
+  }
+
+  /* ---------------- layout helpers ---------------- */
+  function beltPos(i){ return new THREE.Vector3(FRONT_X - i*SLOT, BELT_Y, BELT_Z); }
+  function trayPos(t, i){
+    return new THREE.Vector3(TRAY_X[t] + CELL[i][0], TRAY_Y, TRAY_Z + CELL[i][1]);
+  }
+
+  function layoutBelt(){
+    for(var i=0;i<S.belt.length;i++){
+      S.belt[i].userData.target.copy(beltPos(i));
+    }
+  }
+
+  /* ---------------- game ---------------- */
+  function reset(full){
+    S.belt.forEach(dropPiece);
+    S.trays.forEach(function(t){ t.forEach(dropPiece); });
+    orphans.forEach(dropPiece); orphans.length = 0;
+    pulse[0]=pulse[1]=pulse[2]=0;
+    S.belt = []; S.trays = [[],[],[]]; S.jam = [false,false,false];
+    S.flushed = 0; S.over = false; S.won = false; S.acc = 0;
+    S.adUsed = false;
+    if(full){ S.lvl = 1; }
+    S.hammers = 1;
+    S.feedMs = Math.max(1100, 2600 - (S.lvl-1)*220);
+    veil.hidden = true;
+    for(var i=0;i<3;i++) feed(true);
+    S.running = true;
+    sync();
+  }
+
+  function feed(silent){
+    if(S.over || S.won) return;
+    var k = KEYS[(Math.random()*3)|0];
+    var m = makePiece(k);
+    var start = beltPos(S.belt.length);
+    m.position.set(start.x - 2.2, BELT_Y, BELT_Z);
+    S.belt.push(m);
+    layoutBelt();
+    if(S.belt.length > BELT_CAP){
+      fail('Belt overflow',
+        'The conveyor ran past the stop. No clock did this — you ran out of places to put things.');
+    }
+    if(!silent) sync();
+  }
+
+  function place(t){
+    if(S.over || S.won || !S.belt.length) return;
+    if(S.jam[t] || S.trays[t].length >= DEPTH){ nudgeTray(t); return; }
+    var m = S.belt.shift();
+    var idx = S.trays[t].length;
+    S.trays[t].push(m);
+    m.userData.fly = {
+      t:0, dur:0.30,
+      from: m.position.clone(),
+      to: trayPos(t, idx),
+      arc: 1.5
+    };
+    m.userData.target.copy(trayPos(t, idx));
+    layoutBelt();
+
+    if(S.trays[t].length === DEPTH){
+      var k0 = S.trays[t][0].userData.k;
+      var same = S.trays[t].every(function(p){ return p.userData.k === k0; });
+      if(same) setTimeout(function(){ flush(t); }, 320);
+      else { S.jam[t] = true; }
+    }
+    checkStuck();
+    sync();
+  }
+
+  function flush(t){
+    if(S.over) return;
+    var stack = S.trays[t];
+    S.trays[t] = [];
+    stack.forEach(function(p, i){
+      p.userData.fly = {
+        t:0, dur:0.42, from:p.position.clone(),
+        to:new THREE.Vector3(TRAY_X[t], 4.4 + i*0.28, TRAY_Z - 1.0),
+        arc:0.6
+      };
+      orphans.push(p);
+    });
+    S.flushed++;
+    pulseTray(t);
+    if(S.flushed >= TARGET){
+      S.won = true; S.running = false;
+      show('win','Level clear',
+        'Six clean stacks. Next level feeds faster — the trays stay the same size.',
+        [['Next level','primary',function(){ S.lvl++; reset(false); }]]);
+    }
+    sync();
+  }
+
+  function useHammer(t){
+    if(S.hammers <= 0 || !S.jam[t]) return;
+    S.hammers--;
+    S.trays[t].forEach(function(p){
+      p.userData.fly = {t:0, dur:0.42, from:p.position.clone(),
+        to:new THREE.Vector3(TRAY_X[t] + (Math.random()-0.5)*3, -2.6, TRAY_Z + 2.8),
+        arc:1.2};
+      orphans.push(p);
+    });
+    S.trays[t] = []; S.jam[t] = false;
+    sync();
+  }
+
+  function checkStuck(){
+    if(S.won || S.over) return;
+    var jammed = 0;
+    for(var i=0;i<TRAYS;i++) if(S.jam[i]) jammed++;
+    if(jammed === TRAYS && S.hammers === 0){
+      fail('Every tray jammed',
+        'Three mixed stacks and no hammer left. This is the loss the game is actually about — ' +
+        'you chose every one of those placements.');
+    }
+  }
+
+  function fail(t, p){
+    if(S.over || S.won) return;
+    S.over = true; S.running = false;
+    var acts = [];
+    if(!S.adUsed){
+      acts.push(['Continue — watch ad','primary', function(){
+        S.adUsed = true; S.over = false; S.hammers += 2;
+        // clear the most-poisoned tray and trim the belt
+        var worst = -1;
+        for(var i=0;i<TRAYS;i++) if(S.jam[i]) { worst = i; break; }
+        if(worst >= 0){ S.hammers++; useHammer(worst); }
+        while(S.belt.length > BELT_CAP - 3) dropPiece(S.belt.pop());
+        layoutBelt();
+        veil.hidden = true; S.running = true; sync();
+      }]);
+    }
+    acts.push(['Restart level','',function(){ reset(false); }]);
+    show('lose', t, p + (S.adUsed ? '' : ' — and this is where the rewarded ad is worth most.'), acts);
+  }
+
+  function show(kind, t, p, actions){
+    $('veil-t').textContent = t; $('veil-t').className = kind;
+    $('veil-p').textContent = p;
+    var row = $('veil-row'); row.innerHTML = '';
+    actions.forEach(function(a){
+      var b = document.createElement('button');
+      b.className = 'btn' + (a[1] ? ' ' + a[1] : '');
+      b.textContent = a[0];
+      b.addEventListener('click', a[2]);
+      row.appendChild(b);
+    });
+    veil.hidden = false;
+  }
+
+  /* ---------------- tray feedback ---------------- */
+  var pulse = [0,0,0];
+  function pulseTray(t){ pulse[t] = 1; }
+  function nudgeTray(t){ pulse[t] = -1; }
+
+  /* ---------------- HUD ---------------- */
+  var trayBtns = [];
+  (function buildTrays(){
+    var host = $('trays');
+    for(var i=0;i<TRAYS;i++){
+      (function(i){
+        var b = document.createElement('button');
+        b.className = 'tbtn'; b.type = 'button';
+        var pips = document.createElement('div'); pips.className = 'pips';
+        for(var j=0;j<DEPTH;j++){ var p = document.createElement('span'); p.className='pip'; pips.appendChild(p); }
+        var k = document.createElement('span'); k.className = 'k'; k.textContent = 'TRAY ' + (i+1) + '  ·  key ' + (i+1);
+        b.appendChild(pips); b.appendChild(k);
+        b.addEventListener('click', function(){ if(S.jam[i]) useHammer(i); else place(i); });
+        host.appendChild(b);
+        trayBtns.push({el:b, pips:pips.children, k:k});
+      })(i);
+    }
+  })();
+
+  function sync(){
+    $('h-lvl').textContent = S.lvl;
+    $('h-flush').textContent = S.flushed + '/' + TARGET;
+    $('h-ham').textContent = S.hammers;
+    var near = S.belt.length >= BELT_CAP - 1;
+    $('h-belt').textContent = S.belt.length + '/' + BELT_CAP;
+    $('h-belt').className = 'val' + (S.belt.length >= BELT_CAP ? ' bad' : near ? ' warn' : '');
+    for(var i=0;i<TRAYS;i++){
+      var b = trayBtns[i];
+      for(var j=0;j<DEPTH;j++){
+        var piece = S.trays[i][j];
+        b.pips[j].style.background = piece ? COLORS[piece.userData.k].css : 'transparent';
+      }
+      b.el.classList.toggle('jam', S.jam[i]);
+      b.k.textContent = S.jam[i]
+        ? (S.hammers > 0 ? 'JAMMED · hammer' : 'JAMMED')
+        : 'TRAY ' + (i+1) + '  ·  key ' + (i+1);
+      b.el.disabled = S.jam[i] && S.hammers === 0;
+    }
+    $('buy-ham').disabled = S.won;
+    $('ad-ham').disabled = S.adUsed || S.won;
+  }
+
+  /* ---------------- input ---------------- */
+  var ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  canvas.addEventListener('pointerdown', function(e){
+    var r = canvas.getBoundingClientRect();
+    ndc.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+    ndc.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+    ray.setFromCamera(ndc, camera);
+    var hits = ray.intersectObjects(trayGroups, true);
+    if(hits.length){
+      var o = hits[0].object;
+      while(o && o.userData.tray === undefined) o = o.parent;
+      if(o){ if(S.jam[o.userData.tray]) useHammer(o.userData.tray); else place(o.userData.tray); }
+    }
+  });
+  window.addEventListener('keydown', function(e){
+    if(e.key === '1' || e.key === '2' || e.key === '3'){
+      var i = parseInt(e.key,10) - 1;
+      if(S.jam[i]) useHammer(i); else place(i);
+    }
+  });
+
+  $('buy-ham').addEventListener('click', function(){ S.hammers += 3; sync(); });
+  $('ad-ham').addEventListener('click', function(){
+    if(S.adUsed) return; S.adUsed = true; S.hammers += 1; sync();
+  });
+  $('restart').addEventListener('click', function(){ reset(false); });
+
+  /* ---------------- loop ---------------- */
+  function resize(){
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    if(!w || !h) return;
+    if(canvas.width !== w || canvas.height !== h){
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+  }
+
+  var prev = performance.now();
+  function frame(now){
+    var dt = Math.min(0.05, (now - prev) / 1000); prev = now;
+    resize();
+
+    if(S.running && !S.over && !S.won){
+      S.acc += dt * 1000;
+      if(S.acc >= S.feedMs){ S.acc = 0; feed(); }
+      for(var ri=0; ri<rollers.length; ri++) rollers[ri].rotation.y += dt * 3.0;
+    }
+
+    // settled + in-flight pieces still owned by the belt or a tray
+    var all = S.belt.concat(S.trays[0], S.trays[1], S.trays[2]);
+    for(var i=0;i<all.length;i++){
+      var m = all[i], f = m.userData.fly;
+      if(f){
+        f.t += dt / f.dur;
+        var u = Math.min(1, f.t);
+        var e = u < 0.5 ? 2*u*u : 1 - Math.pow(-2*u+2, 2)/2;
+        m.position.lerpVectors(f.from, f.to, e);
+        m.position.y += Math.sin(Math.PI * u) * f.arc;
+        m.rotation.z = Math.sin(u * Math.PI) * 0.5;
+        if(u >= 1){ m.rotation.z = 0; m.userData.fly = null; }
+      } else {
+        m.position.lerp(m.userData.target, Math.min(1, dt * 9));
+      }
+    }
+
+    // pieces detached from a tray (flushed or hammered) animate out, then die
+    for(var q=orphans.length-1; q>=0; q--){
+      var om = orphans[q], of = om.userData.fly;
+      if(!of){ dropPiece(om); orphans.splice(q,1); continue; }
+      of.t += dt / of.dur;
+      var ou = Math.min(1, of.t);
+      om.position.lerpVectors(of.from, of.to, ou);
+      om.position.y += Math.sin(Math.PI * ou) * of.arc;
+      om.rotation.x += dt * 6; om.rotation.y += dt * 4;
+      var s = 1 - ou * 0.55;
+      om.scale.setScalar(Math.max(0.05, s));
+      if(ou >= 1){ dropPiece(om); orphans.splice(q,1); }
+    }
+
+    // tray feedback: lift on flush, shake on invalid, tint on jam
+    for(var t=0;t<TRAYS;t++){
+      var g = trayGroups[t], oy = 0;
+      if(pulse[t] > 0){ pulse[t] = Math.max(0, pulse[t] - dt*3.2); oy = pulse[t] * 0.3; }
+      else if(pulse[t] < 0){ pulse[t] = Math.min(0, pulse[t] + dt*4.5); oy = Math.sin(pulse[t]*46)*0.07; }
+      g.position.y = oy;
+      trayMats[t].color.lerp(S.jam[t] ? TRAY_JAM : TRAY_BASE, Math.min(1, dt*6));
+    }
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }
+
+  $('loading').style.display = 'none';
+  reset(true);
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</body></html>

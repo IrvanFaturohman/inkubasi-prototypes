@@ -1,25 +1,23 @@
 # Prototype Inkubasi
 
-Kumpulan greybox prototype dari masa inkubasi (September 2026) yang file aslinya sempat kehapus dari laptop. Semua bisa dimainin di browser, paling enak di HP mode portrait.
+Kumpulan 28 greybox prototype dari masa inkubasi (September - Oktober 2026). Semua bisa dimainin di browser, dan tiap game punya link sendiri. Paling enak dimainin di HP, mode portrait.
 
-**Main:** https://irvanfaturohman.github.io/inkubasi-prototypes/
+**Hub:** https://irvanfaturohman.github.io/inkubasi-prototypes/
 
-| Game | Tanggal asli | Gabungan | Asal kode |
-|---|---|---|---|
-| [Magnet Factory](games/magnet-factory) | 6 Sep | Magnet x loop conveyor x sort | Dibikin ulang dari catatan desain |
-| [Toy Factory Sort](games/toy-factory-sort) | 7 Sep | Sort x loop conveyor (payoff-first) | Dibikin ulang dari catatan desain |
-| [Hexa Pinball](games/hexa-pinball) | 7 Sep | Hexa Sort x pinball | Dibikin ulang dari catatan desain |
-| [Arrow Orbit](games/arrow-orbit) | 7 Sep | Launch x incremental | Dibikin ulang dari catatan desain |
-| [Popcorn Pop!](games/popcorn-pop) | 23 Sep | Idle multi-kios x mesin popcorn | Dipulihin dari kode asli |
-| [Harvest Circuit](games/harvest-circuit) | 23 Sep | Galactic Merge x panen | Dipulihin dari kode asli |
-| [Kota Bercabang](games/kota-bercabang) | 24 Sep | Galactic Merge x jalan bercabang | Dipulihin dari riwayat git Loop Builders (commit 262fda5) |
-| [Toy Block Demolition](games/toy-block-demolition) | 28 Sep | Rasa ala Stone Grass, truk penghancur balok | Dipulihin dari kode asli |
+Link tiap game: `https://irvanfaturohman.github.io/inkubasi-prototypes/<nama-folder>/`, misalnya `.../magnet-factory/` atau `.../cubeaway/`.
 
-"Dipulihin dari kode asli" artinya file-nya disusun ulang persis dari riwayat pengerjaan, jadi isinya sama kayak versi aslinya. "Dibikin ulang dari catatan desain" artinya kode aslinya udah hilang total, jadi game-nya ditulis ulang dari catatan desain yang tersisa. Aturan mainnya mengikuti catatan itu, tapi detailnya bisa beda dari versi aslinya. Bagian "Catatan rekonstruksi" di README tiap game nyebutin apa aja yang diputusin ulang.
+## Asal kode
+
+| Label | Artinya | Game |
+|---|---|---|
+| Versi asli dari artifact | Prototype satu file yang dulu dibikin sebagai artifact claude.ai, disalin apa adanya. Teks riset pasar (angka download, revenue, CPI) dihapus dari 4 halaman awal. | Belt Lab, Four Deep, Clack, Marble TD Factory, Fire Truck Flow, Knock-On Factory, Grain Rush, Slice Falls, Molten Line, Squeeze Street, Suds Line, Rinse & Shine, Shine Reveal, Pet Spa, Treat Pusher, Rubber Duck Bath, Root Tree, Cubeaway, Pop Deck, Crawl Deck |
+| Dipulihin dari kode asli | File-nya kehapus dari laptop, lalu disusun ulang persis dari riwayat pengerjaan. Isinya sama kayak versi aslinya. | Popcorn Pop!, Harvest Circuit, Toy Block Demolition, Kota Bercabang (dari commit 262fda5 repo loop-builders) |
+| Dibikin ulang dari catatan desain | Kode aslinya hilang total, jadi game-nya ditulis ulang dari catatan desain yang tersisa. Aturan mainnya mengikuti catatan, detailnya bisa beda. Lihat "Catatan rekonstruksi" di README tiap game. | Magnet Factory, Toy Factory Sort, Hexa Pinball, Arrow Orbit |
 
 ## Struktur
 
-- `games/<nama>/`: tiap game project Vite sendiri (`npm install`, `npm run dev`, `npm run build`).
-- `index.html`: halaman hub yang ngelink ke semua game.
-- `scripts/build-site.sh`: build semua game ke `site/`.
+- `games/<nama>/`: game yang punya project Vite sendiri (`npm install`, `npm run dev`, `npm run build`).
+- `artifacts/<nama>/index.html`: prototype satu file, langsung bisa dibuka di browser.
+- `index.html`: halaman hub.
+- `scripts/build-site.sh`: build semua game dan gabungin ke `site/`.
 - `scripts/deploy.sh`: build lalu push `site/` ke branch `gh-pages`.
