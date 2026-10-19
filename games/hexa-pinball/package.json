@@ -1,0 +1,24 @@
+{
+  "name": "hexa-pinball",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Hexa Pinball: Hexa Sort x pinball. Ten same-colour tiles morph into a ball that is shot into the pinball room above.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "validate": "tsx scripts/validate.ts",
+    "inspect": "tsx scripts/inspect.ts"
+  },
+  "dependencies": {
+    "phaser": "^3.90.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.4"
+  }
+}

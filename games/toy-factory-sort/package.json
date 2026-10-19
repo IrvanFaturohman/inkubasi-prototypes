@@ -1,0 +1,20 @@
+{
+  "name": "toy-factory-sort",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host",
+    "verify": "node scripts/verify.mjs"
+  },
+  "dependencies": {
+    "phaser": "3.90.0"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^24.10.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.0"
+  }
+}

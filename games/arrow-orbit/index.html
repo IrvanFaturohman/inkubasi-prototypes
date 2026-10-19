@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#cfe3ee" />
+    <title>Arrow Orbit</title>
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <div id="frame">
+      <canvas id="view"></canvas>
+
+      <div id="card" class="paper">
+        <div class="card-title">RANGE CARD</div>
+        <div class="row"><span>BEST</span><b id="best">0 m</b></div>
+        <div class="row"><span>PURSE</span><b><i class="coin"></i><span id="coins">0</span></b></div>
+      </div>
+
+      <div id="tape" class="hidden">
+        <div class="tape-strip" id="tapeStrip"></div>
+        <div class="tape-window"><span id="dist">0</span><small>m</small></div>
+      </div>
+      <div id="tally" class="paper hidden">
+        <div class="tally-label">SMASHED</div>
+        <div id="tallyMarks"></div>
+        <div id="comboRing" class="ring hidden">x2</div>
+      </div>
+
+      <div id="gauge">
+        <div class="gauge-label" id="gaugeLabel">TAP TO RELEASE</div>
+        <div class="gauge-scale">
+          <div class="clip">
+            <div class="zone-good"></div>
+            <div class="zone-perfect"></div>
+            <div class="ticks"></div>
+            <div class="point" id="point"></div>
+          </div>
+          <div class="clicker" id="clicker"></div>
+        </div>
+        <div class="gauge-sub"><span>DRAW</span><span>CLICKER</span></div>
+      </div>
+
+      <div id="shop"></div>
+
+      <div id="result" class="paper hidden">
+        <div class="res-head"><span>SCORECARD</span><span id="resEnd">END 1</span></div>
+        <div class="res-row"><span>DISTANCE</span><b id="resDist">0 m</b><em id="resDistC">+0</em></div>
+        <div class="res-row"><span>SMASHED</span><b id="resSmash">0</b><em id="resSmashC">+0</em></div>
+        <div class="res-row total"><span>PURSE</span><b></b><em id="resTotal">+0</em></div>
+        <div id="stamp" class="stamp hidden">NEW RECORD</div>
+        <div class="res-hint">tap to shoot again</div>
+      </div>
+    </div>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

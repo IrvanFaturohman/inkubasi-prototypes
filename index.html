@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Prototype Inkubasi</title>
+  <meta name="description" content="Greybox prototype yang dibikin ulang dari masa inkubasi, Sep 2026." />
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --card: #ffffff;
+      --ink: #1d1f24;
+      --muted: #666b75;
+      --line: #e3ded3;
+      --tag-new: #dcebfa;
+      --tag-new-ink: #1f4f86;
+      --tag-old: #d9f2dc;
+      --tag-old-ink: #1f6b2c;
+      --accent: #e8743b;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #16181c;
+        --card: #1f2228;
+        --ink: #eceef2;
+        --muted: #9aa0ab;
+        --line: #2e323a;
+        --tag-new: #1f3550;
+        --tag-new-ink: #a9cdf5;
+        --tag-old: #1f3d25;
+        --tag-old-ink: #a8e2b1;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    main { max-width: 760px; margin: 0 auto; padding: 32px 16px 48px; }
+    h1 { font-size: 26px; margin: 0 0 6px; letter-spacing: -0.01em; }
+    .lead { color: var(--muted); margin: 0 0 28px; }
+    .grid { display: grid; gap: 12px; }
+    a.card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 4px 12px;
+      padding: 14px 16px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: inherit;
+      text-decoration: none;
+      transition: transform .12s ease, border-color .12s ease;
+    }
+    a.card:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .name { font-weight: 700; font-size: 17px; }
+    .date { color: var(--muted); font-size: 13px; text-align: right; white-space: nowrap; }
+    .combo { grid-column: 1 / -1; color: var(--muted); font-size: 14px; }
+    .tag {
+      grid-column: 1 / -1;
+      justify-self: start;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-top: 4px;
+    }
+    .tag.old { background: var(--tag-old); color: var(--tag-old-ink); }
+    .tag.new { background: var(--tag-new); color: var(--tag-new-ink); }
+    footer { margin-top: 28px; color: var(--muted); font-size: 13px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Prototype Inkubasi</h1>
+    <p class="lead">Greybox prototype dari masa inkubasi (Sep 2026) yang file aslinya sempat kehapus. Paling enak dimainin di HP, mode portrait.</p>
+
+    <div class="grid">
+      <a class="card" href="./magnet-factory/">
+        <span class="name">Magnet Factory</span><span class="date">6 Sep</span>
+        <span class="combo">Magnet x loop conveyor x sort. Tarik bola pakai magnet, setor ke mesin sewarna.</span>
+        <span class="tag new">Dibikin ulang dari catatan desain</span>
+      </a>
+      <a class="card" href="./toy-factory-sort/">
+        <span class="name">Toy Factory Sort</span><span class="date">7 Sep</span>
+        <span class="combo">Sort x loop conveyor, payoff-first. Part jatuh ke belt, mesin ngerakit mainan.</span>
+        <span class="tag new">Dibikin ulang dari catatan desain</span>
+      </a>
+      <a class="card" href="./hexa-pinball/">
+        <span class="name">Hexa Pinball</span><span class="date">7 Sep</span>
+        <span class="combo">Hexa Sort x pinball. 10 tile sewarna jadi bola yang ditembak ke meja pinball.</span>
+        <span class="tag new">Dibikin ulang dari catatan desain</span>
+      </a>
+      <a class="card" href="./arrow-orbit/">
+        <span class="name">Arrow Orbit</span><span class="date">7 Sep</span>
+        <span class="combo">Launch x incremental. Satu tap timing, panah mantul nyapu balok, upgrade.</span>
+        <span class="tag new">Dibikin ulang dari catatan desain</span>
+      </a>
+      <a class="card" href="./popcorn-pop/">
+        <span class="name">Popcorn Pop!</span><span class="date">23 Sep</span>
+        <span class="combo">Idle multi-kios x mesin popcorn. Kios lama tetap ngasilin uang.</span>
+        <span class="tag old">Dipulihin dari kode asli</span>
+      </a>
+      <a class="card" href="./harvest-circuit/">
+        <span class="name">Harvest Circuit</span><span class="date">23 Sep</span>
+        <span class="combo">Galactic Merge x panen. Harvester di jalur berkelok, merge dan expand.</span>
+        <span class="tag old">Dipulihin dari kode asli</span>
+      </a>
+      <a class="card" href="./kota-bercabang/">
+        <span class="name">Kota Bercabang</span><span class="date">24 Sep</span>
+        <span class="combo">Galactic Merge x jalan bercabang ala State Connect. Varian Loop Builders.</span>
+        <span class="tag old">Dipulihin dari kode asli</span>
+      </a>
+      <a class="card" href="./toy-block-demolition/">
+        <span class="name">Toy Block Demolition</span><span class="date">28 Sep</span>
+        <span class="combo">Rasa ala Stone Grass. Truk roller ngancurin balok mainan, jual, upgrade.</span>
+        <span class="tag old">Dipulihin dari kode asli</span>
+      </a>
+    </div>
+
+    <footer>Irvan Faturohman, 2026.</footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,42 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #1d1a26;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+#frame {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#app {
+  width: min(100vw, calc(100dvh * 9 / 16));
+  height: min(100dvh, calc(100vw * 16 / 9));
+  overflow: hidden;
+}
+#app canvas {
+  display: block;
+}
+/* desktop: centred phone frame */
+@media (min-width: 700px) and (min-height: 600px) {
+  body {
+    background: radial-gradient(circle at 50% 40%, #2c2838, #141219);
+  }
+  #app {
+    height: calc(100dvh - 56px);
+    width: calc((100dvh - 56px) * 9 / 16);
+    border-radius: 34px;
+    box-shadow:
+      0 0 0 12px #0d0b12,
+      0 0 0 14px #3a3546,
+      0 30px 80px rgba(0, 0, 0, 0.6);
+  }
+}

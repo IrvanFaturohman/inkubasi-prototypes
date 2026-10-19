@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Harvest Circuit — device preview (dev only)</title>
+    <style>
+      body { margin: 0; padding: 16px; background: #d9ccb0; font-family: system-ui, sans-serif; display: flex; gap: 24px; align-items: flex-start; }
+      figure { margin: 0; }
+      figcaption { font: 600 13px system-ui; margin-bottom: 6px; color: #4a3423; }
+      iframe { border: 0; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,.2); display: block; }
+    </style>
+  </head>
+  <body>
+    <figure><figcaption>390 × 844</figcaption><iframe id="a" width="390" height="844"></iframe></figure>
+    <figure><figcaption>360 × 740</figcaption><iframe id="b" width="360" height="740"></iframe></figure>
+    <script>
+      // Dev harness: each ?s=<name> gets its own pair of save slots.
+      const s = new URLSearchParams(location.search).get('s') || 'dev';
+      document.getElementById('a').src = './?slot=p390-' + s;
+      document.getElementById('b').src = './?slot=p360-' + s;
+    </script>
+  </body>
+</html>

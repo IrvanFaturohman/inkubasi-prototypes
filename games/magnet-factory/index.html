@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#0d0f15" />
+    <title>Magnet Factory</title>
+    <style>
+      html, body { margin: 0; height: 100%; background: #0d0f15; overflow: hidden; touch-action: none;
+        -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+      #wrap { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+      #frame { width: 100vw; height: 100vh; height: 100dvh; background: #171b26; }
+      #game { width: 100%; height: 100%; }
+      #game canvas { display: block; }
+      /* desktop: centred phone-shaped frame (bezel on #frame so Phaser measures only the screen) */
+      @media (min-width: 700px) and (min-aspect-ratio: 4/5) {
+        #frame { height: min(92vh, 940px); width: auto; aspect-ratio: 9 / 16; border-radius: 38px;
+          border: 12px solid #222735; box-shadow: 0 0 0 2px #333a4c, 0 30px 80px rgba(0,0,0,.6); overflow: hidden; }
+        #hint-desktop { display: block; }
+      }
+      #hint-desktop { display: none; position: fixed; bottom: 10px; left: 0; right: 0; text-align: center;
+        color: #4c5468; font: 12px/1.4 system-ui, sans-serif; }
+      #tuning { position: fixed; top: 10px; right: 10px; width: 330px; max-height: calc(100vh - 20px); overflow: auto;
+        background: rgba(13,15,21,.94); color: #d7deee; font: 11px/1.3 ui-monospace, Menlo, monospace;
+        border: 1px solid #333a4c; border-radius: 8px; padding: 8px; z-index: 10; touch-action: auto; user-select: auto; }
+      #tuning .tp-head { display: flex; justify-content: space-between; margin-bottom: 4px; }
+      #tuning .tp-head span { color: #6b758c; }
+      #tuning .tp-stats { color: #ffc93a; margin-bottom: 6px; min-height: 14px; }
+      #tuning .tp-btns { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+      #tuning button { background: #2b3142; color: #d7deee; border: 1px solid #4a5368; border-radius: 4px; font: inherit; padding: 3px 6px; cursor: pointer; }
+      #tuning fieldset { border: 1px solid #2b3142; border-radius: 6px; margin: 0 0 6px; padding: 4px 6px; }
+      #tuning legend { color: #3fa7ff; padding: 0 4px; }
+      #tuning .tp-row { display: grid; grid-template-columns: 118px 1fr 64px; gap: 4px; align-items: center; margin: 2px 0; }
+      #tuning .tp-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      #tuning input[type=number] { width: 60px; background: #171b26; color: #fff; border: 1px solid #333a4c; font: inherit; }
+      #tuning input[type=range] { width: 100%; }
+    </style>
+  </head>
+  <body>
+    <div id="wrap"><div id="frame"><div id="game"></div></div></div>
+    <div id="hint-desktop">drag with the mouse, press D for the tuning panel</div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
